@@ -2,9 +2,9 @@ const path = require('path');
 const fs = require('fs');
 
 // Paths
-const PLAY_TIMES_PATH = path.resolve(__dirname, 'public', 'flappy_quakks', 'play-times.json');
-const LB_PATH = path.resolve(__dirname, 'public', 'flappy_quakks', 'leaderboard.json');
-const SR_PATH = path.resolve(__dirname, 'public', 'flappy_quakks', 'sr-leaderboard.json');
+const PLAY_TIMES_PATH = path.resolve(__dirname, 'public', 'bush_did_it', 'play-times.json');
+const LB_PATH = path.resolve(__dirname, 'public', 'bush_did_it', 'leaderboard.json');
+const SR_PATH = path.resolve(__dirname, 'public', 'bush_did_it', 'sr-leaderboard.json');
 
 // Initialize play-times.json if it doesn't exist
 if (!fs.existsSync(PLAY_TIMES_PATH)) {

@@ -11,8 +11,8 @@ const PORT       = process.env.PORT || 3000;
 const ADMIN_ID   = process.env.ADMIN_ID ? parseInt(process.env.ADMIN_ID, 10) : null;
 
 // ── File paths for leaderboards ──────────────────────────────────────────────
-const LB_PATH = path.join(__dirname, 'public', 'flappy_quakks', 'leaderboard.json');
-const SR_PATH = path.join(__dirname, 'public', 'flappy_quakks', 'sr-leaderboard.json');
+const LB_PATH = path.join(__dirname, 'public', 'bush_did_it', 'leaderboard.json');
+const SR_PATH = path.join(__dirname, 'public', 'bush_did_it', 'sr-leaderboard.json');
 console.log('Saving SR scores to →', SR_PATH);
 
 const { recordPlayTime, recordHighScore, getAnalytics } = require('./analytics');
@@ -234,19 +234,19 @@ function sendWelcome(msg) {
 const app = express();
 app.use(express.json());
 app.use(
-  '/flappy_quakks',
-  express.static(path.join(__dirname, 'public', 'flappy_quakks'))
+  '/bush_did_it',
+  express.static(path.join(__dirname, 'public', 'bush_did_it'))
 );
 
 // ── Quakk pick endpoints ───────────────────────────────────────────────────
-app.get('/flappy_quakks/getQuakk', (req, res) => {
+app.get('/bush_did_it/getQuakk', (req, res) => {
   const { username } = req.query;
   if (!username) return res.status(400).json({ error:'username required' });
   const picks = readPicks();
   res.json({ variant: picks[username] ?? null });
 });
 
-app.post('/flappy_quakks/selectQuakk', (req, res) => {
+app.post('/bush_did_it/selectQuakk', (req, res) => {
   const { username, variant } = req.body;
   if (!username || variant == null) return res.status(400).json({ error:'username & variant required' });
   const picks = readPicks();
@@ -256,7 +256,7 @@ app.post('/flappy_quakks/selectQuakk', (req, res) => {
 });
 
 // ── Classic Leaderboard Endpoints ─────────────────────────────────────────
-app.post('/flappy_quakks/submit', (req, res) => {
+app.post('/bush_did_it/submit', (req, res) => {
   const { username, score, mode, durationMs } = req.body;
   if (typeof username!=='string' 
       || typeof score!=='number' 
@@ -285,7 +285,7 @@ app.post('/flappy_quakks/submit', (req, res) => {
 });
 
 // ── Speed-Run Leaderboard Endpoints ─────────────────────────────────────────
-app.post('/flappy_quakks/SR-submit', (req, res) => {
+app.post('/bush_did_it/SR-submit', (req, res) => {
   const { username, score, mode, durationMs } = req.body;
   if (typeof username!=='string' 
       || typeof score!=='number' 
@@ -314,12 +314,12 @@ app.post('/flappy_quakks/SR-submit', (req, res) => {
 });
 
 // Classic Leaderboard JSON
-app.get('/flappy_quakks/leaderboard', (req, res) => {
+app.get('/bush_did_it/leaderboard', (req, res) => {
   res.json(leaderboard.slice(0, 10));
 });
 
 // Speed-Run Leaderboard JSON
-app.get('/flappy_quakks/SR-leaderboard', (req, res) => {
+app.get('/bush_did_it/SR-leaderboard', (req, res) => {
   res.json(srLeaderboard.slice(0, 10));
 });
 

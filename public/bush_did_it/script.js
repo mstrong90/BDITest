@@ -149,7 +149,7 @@ async function loadServerVariant() {
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user || {};
     const username = user.username ? '@' + user.username : `${user.first_name}_${user.id}`;
-    const res = await fetch(`${location.origin}/flappy_quakks/getQuakk?username=${encodeURIComponent(username)}`);
+    const res = await fetch(`${location.origin}/bush_did_it/getQuakk?username=${encodeURIComponent(username)}`);
     if (!res.ok) throw 0;
     const { variant } = await res.json();
     if (variant != null) {
@@ -204,7 +204,7 @@ function handlePointer(e) {
         const tg = window.Telegram.WebApp;
         const user = tg.initDataUnsafe.user || {};
         const uname = user.username ? '@' + user.username : `${user.first_name}_${user.id}`;
-        fetch(`${location.origin}/flappy_quakks/selectQuakk`, {
+        fetch(`${location.origin}/bush_did_it/selectQuakk`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: uname, variant: Number(i) })
         }).catch(console.error);
@@ -342,7 +342,7 @@ function drawGameOver() {
 async function fetchLeaderboard(){
   try {
     const endpoint = gameMode==='CLASSIC'?'leaderboard':'SR-leaderboard';
-    const res = await fetch(`${location.origin}/flappy_quakks/${endpoint}`);
+    const res = await fetch(`${location.origin}/bush_did_it/${endpoint}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     topList = await res.json();
     state = 'LEADERBOARD';
@@ -466,7 +466,7 @@ async function handleGameOver() {
 
   try {
     const endpoint = mode === 'classic' ? 'submit' : 'SR-submit';
-    await fetch(`${location.origin}/flappy_quakks/${endpoint}`, {
+    await fetch(`${location.origin}/bush_did_it/${endpoint}`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ username, mode, score, durationMs })
