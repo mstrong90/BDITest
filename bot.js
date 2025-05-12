@@ -169,35 +169,47 @@ bot.onText(/^!analytics$/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   if (ADMIN_ID === null || userId !== ADMIN_ID) {
-    return bot.sendMessage(chatId, '🚫 You are not authorized to use this command.');
+    return bot.sendMessage(chatId, 'You are not authorized to use this command.');
   }
 
   getAnalytics((err, rows) => {
     if (err) {
       console.error('Analytics error:', err);
-      return bot.sendMessage(chatId, '❌ Failed to fetch analytics.');
+      return bot.sendMessage(chatId, 'Failed to fetch analytics.');
     }
     if (!rows.length) {
-      return bot.sendMessage(chatId, 'ℹ️ No analytics data yet.');
+      return bot.sendMessage(chatId, 'No analytics data yet.');
     }
 
+    // Helper function to convert decimal minutes to HH:MM:SS
+    function formatTime(minutes) {
+      const totalSeconds = Math.round(minutes * 60); // Convert minutes to seconds
+      const hours = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Calculate totals across all players
+    const totalClassicMinutes = rows.reduce((sum, r) => sum + r.classic_time_played, 0);
+    const totalSpeedMinutes = rows.reduce((sum, r) => sum + r.speed_time_played, 0);
+
+    // Format per-player data as plain text
     const lines = rows.map(r => {
-      return [
-        `${r.username}`,
-        `High(CL): ${r.classic_high_score}`,
-        `High(SR): ${r.speed_high_score}`,
-        `Total(CL): ${r.classic_minutes.toFixed(2)} min`,
-        `Total(SR): ${r.speed_minutes.toFixed(2)} min`
-      ].join(' | ');
+      return `${r.username}, Classic Time: ${formatTime(r.classic_time_played)}, Classic Score: ${r.classic_high_score}, Speed Run Time: ${formatTime(r.speed_time_played)}, Speed Run Score: ${r.speed_high_score}`;
     });
 
+    // Construct message
     const text = [
-      '🦆 *Game Analytics* 🦆',
+      '🦆Game Analytics🦆\n',
+
+      ...lines,
       '',
-      ...lines
+      `Total Classic Time: ${formatTime(totalClassicMinutes)}`,
+      `Total Speed Run Time: ${formatTime(totalSpeedMinutes)}`
     ].join('\n');
 
-    bot.sendMessage(chatId, text, { parse_mode: 'Markdown' });
+    bot.sendMessage(chatId, text);
   });
 });
 // ── sendWelcome ──────────────────────────────────────────────────────────────

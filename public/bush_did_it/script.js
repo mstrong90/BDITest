@@ -1,7 +1,5 @@
 console.log('✅ script.js loaded');
 
-const startTime = performance.now();
-
 // — Import Speed Run settings
 import * as SpeedRunSettings from './speedRunSettings.js';
 
@@ -49,19 +47,15 @@ const CLASSIC_SETTINGS = {
 // — Asset paths
 const PATH = 'assets/';
 const SPRITES = {
-  bg: [PATH + 'sprites/bg.png'],
-  pipe: [PATH + 'sprites/pipe-green.png', PATH + 'sprites/pipe-red.png'],
+  bg: [PATH + 'sprites/nyc.png'],
+  pipe: [PATH + 'sprites/tower.png', PATH + 'sprites/tower.png'],
   base: PATH + 'sprites/base.png',
   bird: [
-    PATH + 'sprites/duck.png', PATH + 'sprites/duck1.png',
-    PATH + 'sprites/duck2.png', PATH + 'sprites/duck3.png',
-    PATH + 'sprites/duck4.png', PATH + 'sprites/duck5.png',
-    PATH + 'sprites/duck6.png', PATH + 'sprites/duck7.png',
-    PATH + 'sprites/duck8.png'
+    PATH + 'sprites/plane.png',    
   ],
   nums: Array.from({ length: 10 }, (_, i) => PATH + `sprites/${i}.png`),
-  msg: PATH + 'sprites/message.png',
-  over: PATH + 'sprites/gameover.png'
+  msg: PATH + 'sprites/title.png',
+  over: PATH + 'sprites/game_over.png'
 };
 const SOUNDS = {
   die: PATH + 'audio/die.ogg',
@@ -81,6 +75,7 @@ let score = 0;
 let pipes = [];
 let baseX = 0;
 let topList = [];
+let playStartTime = 0; // Tracks start of PLAY state
 
 // — Duck (scaled)
 const BIRD_W = 34, BIRD_H = 34, BIRD_SCALE = 1.9;
@@ -382,6 +377,7 @@ function startPlay(){
   // reset difficulty
   lastDifficultyScore = 0;
   difficultyCycle     = 0;
+  playStartTime = performance.now(); // Set play start time
   // ensure variantbag has current pick at top
   if (variantBag.length === 0) refillVariantBag();
   // do not pop a new variant: keep current bird.variant
@@ -459,13 +455,13 @@ async function handleGameOver() {
   state = 'GAMEOVER';
   AUD.hit.play(); AUD.die.play();
 
- // build username
+  // build username
   const tg   = window.Telegram?.WebApp;
   const user = tg?.initDataUnsafe?.user || {};
   const username = user.username
     ? '@' + user.username
     : `${user.first_name}_${user.id}`;
-  const durationMs = performance.now() - startTime;
+  const durationMs = performance.now() - playStartTime; // Calculate play time
   const mode       = gameMode === 'CLASSIC' ? 'classic' : 'speed';
 
   try {
